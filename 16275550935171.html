@@ -1,0 +1,603 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Cocoapods 笔记 - Duarlen的个人网站
+  
+  </title>
+ <meta name="description" content="">
+ <link href="atom.xml" rel="alternate" title="Duarlen的个人网站" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+    <script src="asset/highlightjs/highlight.pack.js"></script>
+    <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+<div id="header">
+    <h1><a href="index.html">Duarlen的个人网站</a></h1>
+</div>
+
+</nav>
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; Duarlen的个人网站</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+      <li><a href="index.html">Home</a></li>
+      
+        <li class="divider"></li>
+        <li><label>归档</label></li>
+
+          
+            <li><a title="iOS权限整理" href="16275548684526.html">iOS权限整理</a></li>
+          
+            <li><a title="常用的三方库（持续更新中）" href="16275544622678.html">常用的三方库（持续更新中）</a></li>
+          
+
+      
+        <li class="divider"></li>
+        <li><label>笔记</label></li>
+
+          
+            <li><a title="Flutter 笔记" href="16275551478614.html">Flutter 笔记</a></li>
+          
+            <li><a title="Cocoapods 笔记" href="16275550935171.html">Cocoapods 笔记</a></li>
+          
+            <li><a title="Git 笔记" href="16275549253001.html">Git 笔记</a></li>
+          
+
+      
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+        <section id="main-content" role="main" class="scroll-container">
+
+          <div class="row">
+            <div class="large-3 medium-3 columns">
+              <div class="hide-for-small">
+                <div class="sidebar">
+                <nav>
+                  <ul id="side-nav" class="side-nav">
+
+                    
+                      <li class="side-title"><span>归档</span></li>
+                        
+                          <li><a title="iOS权限整理" href="16275548684526.html">iOS权限整理</a></li>
+                        
+                          <li><a title="常用的三方库（持续更新中）" href="16275544622678.html">常用的三方库（持续更新中）</a></li>
+                        
+
+                    
+                      <li class="side-title"><span>笔记</span></li>
+                        
+                          <li><a title="Flutter 笔记" href="16275551478614.html">Flutter 笔记</a></li>
+                        
+                          <li><a title="Cocoapods 笔记" href="16275550935171.html">Cocoapods 笔记</a></li>
+                        
+                          <li><a title="Git 笔记" href="16275549253001.html">Git 笔记</a></li>
+                        
+
+                    
+                  </ul>
+                </nav>
+                </div>
+              </div>
+            </div>
+            <div class="large-9 medium-9 columns">
+
+ <div class="markdown-body">
+<h1>Cocoapods 笔记</h1>
+
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>安装与卸载</td>
+<td></td>
+</tr>
+<tr>
+<td><code>sudo gem install cocoapods</code></td>
+<td>安装 cocoapods</td>
+</tr>
+<tr>
+<td><code>sudo gem install cocoapods -v 1.10.0</code></td>
+<td>安装 cocoapods 1.10.0 版本</td>
+</tr>
+<tr>
+<td><code>sudo gem uninstall cocoapods</code></td>
+<td>卸载 cocoapods</td>
+</tr>
+<tr>
+<td><code>sudo gem uninstall cocoapods -v 1.10.0</code></td>
+<td>卸载版本 1.10.0</td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>安装在个人目录下</td>
+<td></td>
+</tr>
+<tr>
+<td><code>export GEM_HOME=$HOME/.gem</code> <br> <code>export PATH=$GEM_HOME/bin:$PATH</code></td>
+<td>添加在 <code>.zshrc</code> 或 <code>.bashrc</code> 中 <br> 不用 <code>sudo</code> 命令</td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>Podfile 设置</td>
+<td></td>
+</tr>
+<tr>
+<td><code>source &#39;https://github.com/CocoaPods/Specs.git&#39;</code></td>
+<td>使用默认的资源仓库</td>
+</tr>
+<tr>
+<td><code>source &#39;私有仓库Git&#39;</code></td>
+<td>使用私有仓库</td>
+</tr>
+<tr>
+<td><code>source &#39;https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git&#39;</code></td>
+<td>使用清华大学镜像</td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+</tr>
+<tr>
+<td>开发常用命令</td>
+<td></td>
+</tr>
+<tr>
+<td><code>pod setup</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pod install</code></td>
+<td>安装</td>
+</tr>
+<tr>
+<td><code>pod install --repo-update</code></td>
+<td>安装并更新仓库 <br> 已安装过的三方库，不会更新版本号</td>
+</tr>
+<tr>
+<td><code>pod install --verbose</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pod update AFNetworking</code></td>
+<td>更新 AFNetwroking 三方库的版本</td>
+</tr>
+<tr>
+<td><code>pod update</code></td>
+<td>更新所有的三方库</td>
+</tr>
+<tr>
+<td><code>pod repo update</code></td>
+<td>更新仓库</td>
+</tr>
+<tr>
+<td><code>pod repo update PrivatePodspecs</code></td>
+<td>更新指定的仓库</td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+</tr>
+<tr>
+<td>私有库创建与提交</td>
+<td></td>
+</tr>
+<tr>
+<td><code>pod lib create [PodName.podspec]</code></td>
+<td>创建私有库（项目不存在）</td>
+</tr>
+<tr>
+<td><code>pod spec create [PodName]</code></td>
+<td>创建私有库（项目已存在）</td>
+</tr>
+<tr>
+<td><code>pod lib lint</code></td>
+<td>本地验证私有库</td>
+</tr>
+<tr>
+<td><code>pob lib lint xxx.podspec</code></td>
+<td>本地校验私有库</td>
+</tr>
+<tr>
+<td><code>pod lib lint --allow-warnings</code></td>
+<td>本地校验并忽略警告</td>
+</tr>
+<tr>
+<td><code>pod lib lint --allow-warnings --verbose</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pod spec lint</code></td>
+<td>联网验证</td>
+</tr>
+<tr>
+<td><code>pod spec lint xxx.podspec</code></td>
+<td>联网验证</td>
+</tr>
+<tr>
+<td><code>pod repo add &lt;repo git&gt;</code></td>
+<td>添加一个私有Repo</td>
+</tr>
+<tr>
+<td><code>pod repo push &lt;repo git&gt; xxx.podspec</code></td>
+<td>提交到仓库</td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>私有库配置信息</td>
+<td></td>
+</tr>
+<tr>
+<td><code>s.source</code></td>
+<td>资源位置（一般已经配好了）</td>
+</tr>
+<tr>
+<td><code>s.platform</code></td>
+<td>平台以及版本号</td>
+</tr>
+<tr>
+<td><code>s.requires_arc</code></td>
+<td>是否进行arc</td>
+</tr>
+<tr>
+<td><code>s.source_files</code></td>
+<td>源文件路径（代码文件）</td>
+</tr>
+<tr>
+<td><code>s.resources</code></td>
+<td>资源文件（图片等）</td>
+</tr>
+<tr>
+<td><code>s.frameworks</code></td>
+<td>依赖的framework（系统的）</td>
+</tr>
+<tr>
+<td><code>s.dependency &#39;AFNetworking&#39;</code></td>
+<td>依赖的三方库（线上仓库的）</td>
+</tr>
+<tr>
+<td><code>s.vendored_frameworks</code></td>
+<td>依赖的 frameworks （放在当前仓库中的）</td>
+</tr>
+<tr>
+<td><code>s.vendored_libraries</code></td>
+<td>依赖的 .a 文件 （放在当前仓库中的）</td>
+</tr>
+<tr>
+<td><code>s.user_target_xcconfig</code></td>
+<td>使用该仓库的 target 需要进行的配置</td>
+</tr>
+<tr>
+<td><code>s.pod_target_xcconfig</code></td>
+<td>当前仓库进行的配置</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="toc_0">遇到的问题</h2>
+
+<pre><code class="language-text">  ### 私有库运行失败时，可以选择添加如下代码。xcode 12 以上会出现对应的错误
+  s.pod_target_xcconfig     = { &#39;VALID_ARCHS&#39; =&gt; &#39;x86_64 armv7 arm64&#39; }
+</code></pre>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="16275551478614.html"  title="Previous Post: Flutter 笔记">&laquo; Flutter 笔记</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="16275549253001.html" 
+	        title="Next Post: Git 笔记">Git 笔记 &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '16275550935171.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
+</div></div>
+
+
+<div class="page-bottom">
+  <div class="row">
+  <hr />
+  <div class="small-9 columns">
+  <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+  <div class="small-3 columns">
+  <p class="copyright text-right"><a href="#header">TOP</a></p>
+  </div>
+   
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+    
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="asset/prism.js"></script>
+
+
+<style type="text/css">
+figure{margin: 0.4em 0;padding: 0;}
+  figcaption{text-align:center;}
+
+/* PrismJS 1.14.0
+ http://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript */
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+    color: black;
+    background: none;
+    text-shadow: 0 1px white;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+    text-shadow: none;
+    background:#b3d4fc;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+    text-shadow: none;
+    background: #b3d4fc;
+}
+
+@media print {
+    code[class*="language-"],
+    pre[class*="language-"] {
+        text-shadow: none;
+    }
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: #F7F7F7;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: slategray;
+}
+
+.token.punctuation {
+    color: #999;
+}
+
+.namespace {
+    opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #905;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #690;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #9a6e3a;
+    background: hsla(0, 0%, 100%, .5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #07a;
+}
+
+.token.function,
+.token.class-name {
+    color: #DD4A68;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+    color: #e90;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+
+pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+    position: relative;
+    white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: -3.8em;
+    width: 3em; /* works for line-numbers below 1000 lines */
+    letter-spacing: -1px;
+    border-right: 1px solid #999;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+    .line-numbers-rows > span {
+        pointer-events: none;
+        display: block;
+        counter-increment: linenumber;
+    }
+
+        .line-numbers-rows > span:before {
+            content: counter(linenumber);
+            color: #999;
+            display: block;
+            padding-right: 0.8em;
+            text-align: right;
+        }
+
+
+</style>
+    
+    <script src="asset/js/foundation.min.js"></script>
+    <script src="asset/js/foundation/foundation.offcanvas.js"></script>
+    <script>
+      $(document).foundation();
+
+     
+    </script>
+
+
+  </body>
+</html>
