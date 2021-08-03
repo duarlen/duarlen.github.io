@@ -1,0 +1,713 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  HDWallet 推导密钥流程 - 阿杜的个人空间
+  
+  </title>
+ <meta name="description" content="">
+ <link href="atom.xml" rel="alternate" title="阿杜的个人空间" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+    <script src="asset/highlightjs/highlight.pack.js"></script>
+    <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+<div id="header">
+    <h1><a href="index.html">阿杜的个人空间</a></h1>
+</div>
+
+</nav>
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; 阿杜的个人空间</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+      <li><a href="index.html">Home</a></li>
+      
+        <li class="divider"></li>
+        <li><label>区块链</label></li>
+
+          
+            <li><a title="HDWallet 推导密钥流程" href="16279711302389.html">HDWallet 推导密钥流程</a></li>
+          
+            <li><a title="ETH 交易手续费计算" href="16279703602193.html">ETH 交易手续费计算</a></li>
+          
+
+      
+        <li class="divider"></li>
+        <li><label>笔记</label></li>
+
+          
+            <li><a title="Flutter 笔记" href="16275551478614.html">Flutter 笔记</a></li>
+          
+            <li><a title="Cocoapods 笔记" href="16275550935171.html">Cocoapods 笔记</a></li>
+          
+            <li><a title="Git 笔记" href="16275549253001.html">Git 笔记</a></li>
+          
+            <li><a title="iOS权限整理" href="16275548684526.html">iOS权限整理</a></li>
+          
+            <li><a title="常用的三方库" href="16275544622678.html">常用的三方库</a></li>
+          
+
+      
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+        <section id="main-content" role="main" class="scroll-container">
+
+          <div class="row">
+            <div class="large-3 medium-3 columns">
+              <div class="hide-for-small">
+                <div class="sidebar">
+                <nav>
+                  <ul id="side-nav" class="side-nav">
+
+                    
+                      <li class="side-title"><span>区块链</span></li>
+                        
+                          <li><a title="HDWallet 推导密钥流程" href="16279711302389.html">HDWallet 推导密钥流程</a></li>
+                        
+                          <li><a title="ETH 交易手续费计算" href="16279703602193.html">ETH 交易手续费计算</a></li>
+                        
+
+                    
+                      <li class="side-title"><span>笔记</span></li>
+                        
+                          <li><a title="Flutter 笔记" href="16275551478614.html">Flutter 笔记</a></li>
+                        
+                          <li><a title="Cocoapods 笔记" href="16275550935171.html">Cocoapods 笔记</a></li>
+                        
+                          <li><a title="Git 笔记" href="16275549253001.html">Git 笔记</a></li>
+                        
+                          <li><a title="iOS权限整理" href="16275548684526.html">iOS权限整理</a></li>
+                        
+                          <li><a title="常用的三方库" href="16275544622678.html">常用的三方库</a></li>
+                        
+
+                    
+                  </ul>
+                </nav>
+                </div>
+              </div>
+            </div>
+            <div class="large-9 medium-9 columns">
+
+ <div class="markdown-body">
+<h1>HDWallet 推导密钥流程</h1>
+
+<p>HD钱包（Hierarchical Deterministic walle，简称 HD钱包）是目前常用的层级确定性钱包，能够通过助记词推导出一些列密钥，可以方便用户备份钱包。</p>
+
+<p>经过一段时间对 HD 钱包的了解，希望通过本篇文章可以为大家梳理一下 HD 钱包的推导密钥流程。首先说明一下 <code>HD钱包</code>推导密钥的主要流程为：</p>
+
+<pre><code class="language-text">1. 获取助记词
+2. 根据助记词推导种子
+3. 根据种子推导主密钥
+4. 根据父密钥推导子密钥。（主密钥是首个父密钥）
+5. ... （按照第 4 步依次推导）
+</code></pre>
+
+<h2 id="toc_0">标准规则</h2>
+
+<p>HD 钱包的私钥推导流程主要借助于几个标准规则，有 BIP32，BIP39，BIP44。</p>
+
+<p><code>BIP32</code>：该标准定义了，通过一个种子来维护多个私钥的树状结构方式。HD钱包就是依据该标准。</p>
+
+<p><code>BIP39</code>：定义了钱包的助记词和种子的生成规则。</p>
+
+<p><code>BIP44</code>：在 BIP32 的基础上，给予树状结构的每一层一个特殊的意义。可以让统一种子支援多个币种，多个账户。</p>
+
+<h2 id="toc_1">算法与函数</h2>
+
+<p>推导过程中使用到的算法，简单了解一下。</p>
+
+<p><code>SHA256</code>：获取熵校验和的算法</p>
+
+<p><code>PBKDF2</code>：根据助记词推算种子的算法。其内部使用了 <code>HMAC-SHA512</code>算法（2048 次循环）。</p>
+
+<p><code>HMAC-SHA512</code>:生成种子时使用，以及推导主密钥，由父密钥推导子密钥时使用。</p>
+
+<p><code>椭圆曲线算法</code>：私钥推导公钥的算法。</p>
+
+<p><code>CKD函数</code>(child key derivation)：从父密钥推导普通子密钥时使用的函数。</p>
+
+<p><code>HKD函数</code>(hardened key derivation formula)：由父密钥推导增强子密钥时的函数。</p>
+
+<h2 id="toc_2">1. 获取助记词</h2>
+
+<p>获取助记词是 <code>HD钱包</code> 的使用的第一步，有了助记词才能推导种子以及推导后面的密钥操作。</p>
+
+<p>生成助记词的主要步骤为：</p>
+
+<pre><code class="language-text">1. 生成一个长度为 128 ~ 256 位的随机序列（后面称为熵；
+    - 熵的取值长度需要为 32 的整数倍的值。所以取值可能为：【128, 160, 192, 224, 256】；
+    - 目前我们 APP 使用的是 128 位。
+2. 获取熵的校验和；
+    - 取熵哈希后的前 n 位作为校验和（n = 熵长度/32）。
+    - 校验和的理论值为【4，5，6，7，8】，因为熵的取值范围为 128 ~ 256。
+    - 
+3. 生成新的序列；
+    - 新的序列方式为 = 熵 + 校验和
+    - 
+4. 获得 m 个 11 位二进制数。
+    - 将新生成的序列，按照 11 位进行平分。
+    - 为什么是 11 位？助记词库总共有 2048 个单词，2^11 正好是 2048。所以用 11 位二进制数刚好可以将所有的助记词定位。
+    - 新序列的长度取值范围为：【128+4，160+5，192+6，224+7，256+8】即【132，165，198，231，264】
+    - m 的取值范围为：【12，15，18，21，24】
+    - 
+5. 获得 m 个助记词；
+    - 根据第四步得到的 m 个 11位二进制数，去助记词表定位每一个助记词。
+</code></pre>
+
+<p>熵、校验和、助记词个数关系如下表所示</p>
+
+<table>
+<thead>
+<tr>
+<th>熵（bits）</th>
+<th>校验和(bits)</th>
+<th>熵+校验和（bits）</th>
+<th>助记词个数</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>128</td>
+<td>4</td>
+<td>132</td>
+<td>12</td>
+</tr>
+<tr>
+<td>160</td>
+<td>5</td>
+<td>165</td>
+<td>15</td>
+</tr>
+<tr>
+<td>192</td>
+<td>6</td>
+<td>198</td>
+<td>18</td>
+</tr>
+<tr>
+<td>224</td>
+<td>7</td>
+<td>231</td>
+<td>21</td>
+</tr>
+<tr>
+<td>256</td>
+<td>8</td>
+<td>264</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+
+<p>简单说流程为：</p>
+
+<pre><code class="language-text">1. 生成随机序列熵。（128 ~ 256 位随机序列，而且为 32 的倍数）
+2. 生成新的随机序列。 (熵 + 哈希(熵)/32)
+3. 获取 m 个助记词对应序号。m = (熵 + 哈希(熵)/32) / 11
+4. 分别获取对应的助记词。
+</code></pre>
+
+<p>获取助记词流程图如下：<br/>
+<img src="http://upload-images.jianshu.io/upload_images/1785959-bed496243dd75389.png" alt="image"/></p>
+
+<h2 id="toc_3">2. 根据助记词推导种子（seed）</h2>
+
+<p>了解了第一步，就知道如何生成助记词，有了助记词就可以进行推导种子了。</p>
+
+<p>通过助记词生成种子，需要使用 <code>PBKDF2算法</code> 来生成。<code>PBKDF2算法</code>具体如下：</p>
+
+<pre><code class="language-text">参数 1：mnemonic: 助记词
+参数 2：salt: 盐，目的是为了增加算法难度
+具体算法为：
+    采用 HMAC-SHA512 算法，进行 2048 次哈希来延伸助记词和盐参数。
+    产生一个 512 位的最终输出，这个 512 位输出就是种子(seed)
+</code></pre>
+
+<p>seed生成算法如图所示：<br/>
+<img src="http://upload-images.jianshu.io/upload_images/1785959-155e604188878b39.png" alt="image"/></p>
+
+<ul>
+<li>⑦：就是助记词。PBKDF2 的算法参数</li>
+<li>⑧：salt。PBKDF2 算法参数，目的是为了增加算法难度。</li>
+<li>⑨：使用sha512算法，进行 2048 次 hash </li>
+<li>结果：产成一个 512 bit 的种子。</li>
+</ul>
+
+<h2 id="toc_4">3. 根据种子推导主密钥和主链码</h2>
+
+<p>经过前面几步，了解到了如何获取助记词，以及如何通过助记词推导种子流程。接下来开始推导主密钥。</p>
+
+<p>推导主密钥的方法为，从种子通过 <code>HMAC-SHA512</code> 算法计算一次，就会生成一个 512 位的序列。将其从中间分开，左侧 256 位为<code>主私钥</code>，右侧 256 位为<code>主链码</code>。</p>
+
+<ul>
+<li>主私钥：可以推导主公钥，也可以进行推导子密钥等</li>
+<li>链码：用作推导子密钥的熵。</li>
+</ul>
+
+<p>推导主密钥流程图如下：<br/>
+<img src="http://upload-images.jianshu.io/upload_images/1785959-838fb4445a1d179c.png" alt="image"/></p>
+
+<h2 id="toc_5">4. 根据父密钥推导子密钥</h2>
+
+<p>通过前面几步，已经了解到从如何生成助记词到如何创建主密钥，接下来就需要了解如何推导子密钥。</p>
+
+<p>子密钥是通过父密钥来进行推导的，<code>当然首个父密钥就是主密钥</code>。</p>
+
+<p>推导子密钥的方法将分三步来学习</p>
+
+<ol>
+<li>子私钥推导方式</li>
+<li>子公钥推导方式</li>
+<li>增强子密钥推导方式</li>
+</ol>
+
+<h3 id="toc_6">4.1 子私钥推导</h3>
+
+<p>子私钥的推导方式，可以使用 CKD (child key derivation) 函数从<code>父密钥</code>推导出子密钥。</p>
+
+<p>CKD 函数为：CDKpriv((K<sub>par</sub>, C<sub>par</sub>), i) → (K<sub>i</sub>, C<sub>i</sub>)</p>
+
+<p>具体推导步骤为：</p>
+
+<ol>
+<li>通过<code>父私钥</code>通过椭圆曲线算法推导出<code>父公钥</code></li>
+<li>通过<code>父公钥</code>、<code>父链码</code>、<code>索引序号</code>通过 <code>HMAC-SHA512</code>函数进行一次算法。得到<code>子私钥</code>和<code>子链码</code></li>
+<li>通过<code>子私钥</code>通过椭圆曲线算法推导出<code>子公钥</code>。</li>
+</ol>
+
+<p>索引序号决定了可以推导出子密钥的个数，其取值范围为：0 ~ 2<sup>32</sup> 。其中索引号 0 ~ 2<sup>31</sup> - 1 推导出子密钥的过程被称为<code>正常衍生</code>，索引号 2<sup>31</sup> ~ 2<sup>32</sup> - 1 推导出子密钥的过程被称为<code>增强衍生</code></p>
+
+<p>为什么引入链码？<br/>
+钱包安全的核心在私钥，而公钥则比较容易被找到，如果子节点生成过程只依赖父节点公钥和子节点序号，那么黑客拿到父节点公钥之后就能复原出所有子节点、孙节点的公钥，这样就会破坏隐私性，CKD 里面引入的 Chain Code 则是在整个子节点派生过程中引入确定的随机数，为 HD 钱包的隐私性增加了一重保障。</p>
+
+<p>流程图如下：<br/>
+<img src="http://upload-images.jianshu.io/upload_images/1785959-1224f8f1acd381d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"/></p>
+
+<h3 id="toc_7">4.2 扩展密钥</h3>
+
+<p>在该推导过程中，父密钥和链码结合起来统称为<code>扩展密钥</code>。即 256位的父密钥+256的链码结合</p>
+
+<p>父私钥和链码结合起来称为<code>扩展私钥</code>，扩展私钥可用来推导<code>子私钥</code>，子私钥可以继续推导<code>子公钥</code></p>
+
+<p>父公钥和链码结合起来称为<code>扩展公钥</code>，扩展公钥可用来推导<code>子公钥</code></p>
+
+<p>扩展密钥使用 Base58Check 来编码。扩展私钥编码后前缀为<code>xprv</code>，扩展公钥编码后前缀为<code>xpub</code>。</p>
+
+<h3 id="toc_8">4.3 子公钥推导</h3>
+
+<p>通过 4.1 可以通过 CKD 函数配合父私钥和链码以及索引号推导出子私钥，然后通过子私钥推导子公钥。</p>
+
+<p>但是层级确定性钱包的特点就是可以不通过私钥而直接通过公钥派生出子公钥的能力，可以增强其安全性。所以就有了两种推导子公钥的方式：1、通过子私钥推导。2、通过父公钥推导</p>
+
+<p>子公钥的推导过程和子私钥推导过程流程基本一样，差异之处为：</p>
+
+<ul>
+<li>将私钥推导过程替换为公钥</li>
+<li>使用子公钥推导出其子链码</li>
+</ul>
+
+<p>子公钥推导流程如下图所示：<br/>
+<img src="https://upload-images.jianshu.io/upload_images/23587121-d20d6b070b873d07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"/></p>
+
+<h3 id="toc_9">4.4 普通子密钥钥推导的安全问题</h3>
+
+<p>通过扩展公钥推导出子公钥的能力很重要，但是也会有一些风险。比如并不能得到访问子私钥的途径。扩展公钥拥有链码，如果子私钥被泄露，链码就可以用来衍生其他所有的子密钥。也就是说泄露了<code>父链码</code>和<code>子私钥</code>就会暴露所有的子密钥，而且，<code>子私钥</code>和<code>父链码</code>可以推导出<code>父私钥</code>。如下图：<br/>
+<img src="https://upload-images.jianshu.io/upload_images/23587121-8adfc678a7547a28.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"/></p>
+
+<h5 id="toc_10">4.4.1 疑问：怎么由子私钥+父链码推导出父私钥?</h5>
+
+<p>在 CKD 的算法的源码中，通过以上得知，父密钥推导子密钥有两种方法：1、父私钥 → 子私钥，2、父公钥 → 子公钥。这两种方法得到的子链码是相同的。</p>
+
+<p>其算法过程为</p>
+
+<ol>
+<li>父公钥 + 链码 经过 HAMC-SHA512 算法得到 512 位结果。<br/>
+其中对 512 结果进行从中间分开。左侧256位和右侧256位</li>
+<li>子私钥 = 左256位 + 父私钥，子公钥 = 左256位 + 父公钥。</li>
+<li>子链码 = 右侧 256 位</li>
+</ol>
+
+<p>当某一个环节的<code>子私钥</code>泄露后。在加上<code>扩展公钥</code>近乎是公开的，是可以拿到的，通过扩展公钥，可以得到完整的512位结果，就可以得到左256位。结合上述公式，也就可以从子私钥推导出父私钥了。流程为：</p>
+
+<ol>
+<li>拿到扩展公钥。（公开的）</li>
+<li>进行 HAMC-SHA512 得到 512 位。</li>
+<li>取左 256 位。</li>
+<li>子私钥泄露 ！！！！！</li>
+<li>父私钥 = 子私钥 - 左 256 位</li>
+</ol>
+
+<h3 id="toc_11">4.5 增强子密钥推导</h3>
+
+<p>为此HD 钱包使用了新的推导函数 HDK（ hardened key derivation formula ）增强密钥推导。HDK 中通过<code>父私钥</code>去推导<code>子链码</code>，而不是<code>父公钥</code>。</p>
+
+<p>流程图如下：<br/>
+<div align=center><br/>
+<img src="http://upload-images.jianshu.io/upload_images/1785959-da0636d43b3579ed.png" style="zoom:30%"><br/>
+</div></p>
+
+<h2 id="toc_12">5. HD 钱包路径表示符号：</h2>
+
+<p>hd 钱包推导路径中，每推导出一代就用 ‘/’ 分割开来。主私钥用 m 表示。</p>
+
+<table>
+<thead>
+<tr>
+<th>HD 路径</th>
+<th>密钥描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>m/0</td>
+<td>从主私钥(m) 推导出的第一代的第一个子私钥</td>
+</tr>
+<tr>
+<td>m/0/0</td>
+<td>从第一代子密钥m(0)推导出的第二代第一个孙私钥</td>
+</tr>
+<tr>
+<td>m/0&#39;/0</td>
+<td>从第一代增强密钥 (m/0&#39;)推导出得第二代第一个孙密钥</td>
+</tr>
+<tr>
+<td>m/1/0</td>
+<td>从第一代的第二个子密钥推导出的第二代第一个孙密钥</td>
+</tr>
+</tbody>
+</table>
+
+<p>BIP44 指定了 5 个预定义树状层级结构：<br/>
+<code>m / purpose&#39; / coin_type&#39; / account&#39; / change / address_index</code></p>
+
+<ul>
+<li>m: 固定为主密钥</li>
+<li>purpose: 固定 44&#39; （或者 0x8000002C）貌似是代表 BIP44 的意思。</li>
+<li>coin_type: 代表币种。比如：0代表 BTC，60 代表 ETH，194 代表 EOS。</li>
+<li>account: 代表这个币的索引账户。从 0 开始</li>
+<li>change: 常量 0 或 1。
+<ul>
+<li>0 用于外部链。外部链：用于在钱包外可见的地址。（比如收款等，也是我们经常使用的）</li>
+<li>1 用于内部链。内部链：用于在钱包外部不可见的地址，用于返回交易变更。</li>
+</ul></li>
+<li>address_index：地址索引号。代表生成的第几个地址。官方建议，不要超过 20 个地址，第 0 个没使用不建议使用第1个。</li>
+</ul>
+
+<p>通过BIP44标准制定的路径为：<br/>
+例如：BTC：<code>m / 44&#39; / 0&#39; / a&#39; / 0 / n</code><br/>
+例如：ETH：<code>m / 44&#39; / 60&#39; / a&#39; / 0 / n</code><br/>
+例如：EOS：<code>m / 44&#39; / 194&#39; / a&#39;/ 0 / n</code><br/>
+其中 a 就代表的是账户，n 代表的是第几个索引值。</p>
+
+<h2 id="toc_13">6. 分曾密钥结构图</h2>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/23587121-11ef197db9166506.jpg" alt="image"/></p>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="16279703602193.html" 
+	        title="Next Post: ETH 交易手续费计算">ETH 交易手续费计算 &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '16279711302389.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
+</div></div>
+
+
+<div class="page-bottom">
+  <div class="row">
+  <hr />
+  <div class="small-9 columns">
+  <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+  <div class="small-3 columns">
+  <p class="copyright text-right"><a href="#header">TOP</a></p>
+  </div>
+   
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+    
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="asset/prism.js"></script>
+
+
+<style type="text/css">
+figure{margin: 0.4em 0;padding: 0;}
+  figcaption{text-align:center;}
+
+/* PrismJS 1.14.0
+ http://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript */
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+    color: black;
+    background: none;
+    text-shadow: 0 1px white;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+    text-shadow: none;
+    background:#b3d4fc;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+    text-shadow: none;
+    background: #b3d4fc;
+}
+
+@media print {
+    code[class*="language-"],
+    pre[class*="language-"] {
+        text-shadow: none;
+    }
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: #F7F7F7;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: slategray;
+}
+
+.token.punctuation {
+    color: #999;
+}
+
+.namespace {
+    opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #905;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #690;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #9a6e3a;
+    background: hsla(0, 0%, 100%, .5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #07a;
+}
+
+.token.function,
+.token.class-name {
+    color: #DD4A68;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+    color: #e90;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+
+pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+    position: relative;
+    white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: -3.8em;
+    width: 3em; /* works for line-numbers below 1000 lines */
+    letter-spacing: -1px;
+    border-right: 1px solid #999;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+    .line-numbers-rows > span {
+        pointer-events: none;
+        display: block;
+        counter-increment: linenumber;
+    }
+
+        .line-numbers-rows > span:before {
+            content: counter(linenumber);
+            color: #999;
+            display: block;
+            padding-right: 0.8em;
+            text-align: right;
+        }
+
+
+</style>
+    
+    <script src="asset/js/foundation.min.js"></script>
+    <script src="asset/js/foundation/foundation.offcanvas.js"></script>
+    <script>
+      $(document).foundation();
+
+     
+    </script>
+
+
+  </body>
+</html>

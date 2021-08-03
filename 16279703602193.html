@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Archives - 阿杜的个人空间
+  ETH 交易手续费计算 - 阿杜的个人空间
   
   </title>
  <meta name="description" content="">
@@ -114,122 +114,73 @@
             <div class="large-9 medium-9 columns">
 
  <div class="markdown-body">
-	
-		 
-		  	<h2>2021</h2>
-		
-		
-			<div>
-				<h3><a href="16279711302389.html">HDWallet 推导密钥流程</a></h3>
-				<p>
-					<time datetime="2021-08-03T14:12:10+08:00" pubdate><span class='month'>8月</span> <span class='day'>03</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E5%8C%BA%E5%9D%97%E9%93%BE.html'>区块链</a>&nbsp;
-				   
-				  </span>
+<h1>ETH 交易手续费计算</h1>
 
-				</p>
-			</div>
- 	
-		
-		
-			<div>
-				<h3><a href="16279703602193.html">ETH 交易手续费计算</a></h3>
-				<p>
-					<time datetime="2021-08-03T13:59:20+08:00" pubdate><span class='month'>8月</span> <span class='day'>03</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E5%8C%BA%E5%9D%97%E9%93%BE.html'>区块链</a>&nbsp;
-				   
-				  </span>
+<p>ETH 交易过程中需要支付一定的手续费（矿工费），手续费主要是出于安全考虑以及矿工激励。</p>
 
-				</p>
-			</div>
- 	
-		
-		
-			<div>
-				<h3><a href="16275551478614.html">Flutter 笔记</a></h3>
-				<p>
-					<time datetime="2021-07-29T18:39:07+08:00" pubdate><span class='month'>7月</span> <span class='day'>29</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E7%AC%94%E8%AE%B0.html'>笔记</a>&nbsp;
-				   
-				  </span>
+<p>用户在交易过程中，可以选择对应的手续费，矿工会优先打包手续费高的交易。所以选择的手续费越高，交易速度越快。</p>
 
-				</p>
-			</div>
- 	
-		
-		
-			<div>
-				<h3><a href="16275550935171.html">Cocoapods 笔记</a></h3>
-				<p>
-					<time datetime="2021-07-29T18:38:13+08:00" pubdate><span class='month'>7月</span> <span class='day'>29</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E7%AC%94%E8%AE%B0.html'>笔记</a>&nbsp;
-				   
-				  </span>
+<h4 id="toc_0">矿工费如何计算？</h4>
 
-				</p>
-			</div>
- 	
-		
-		
-			<div>
-				<h3><a href="16275549253001.html">Git 笔记</a></h3>
-				<p>
-					<time datetime="2021-07-29T18:35:25+08:00" pubdate><span class='month'>7月</span> <span class='day'>29</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E7%AC%94%E8%AE%B0.html'>笔记</a>&nbsp;
-				   
-				  </span>
+<p>矿工费计算公式为：<code>矿工费 = Gas Price * Gas Limit</code>。<br/>
+<code>Gas Price</code>：价格，就是一份 Gas 的价格。（价格越高，交易越快）<br/>
+<code>Gas Limit</code>：限额，一定要比实际消耗的 Gas 大。</p>
 
-				</p>
-			</div>
- 	
-		
-		
-			<div>
-				<h3><a href="16275548684526.html">iOS权限整理</a></h3>
-				<p>
-					<time datetime="2021-07-29T18:34:28+08:00" pubdate><span class='month'>7月</span> <span class='day'>29</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E7%AC%94%E8%AE%B0.html'>笔记</a>&nbsp;
-				   
-				  </span>
+<p>以汽车为例：Gas Price 就是油价。Gas Limit 像油箱可存放的油量。Gas Limit 如果小于实际消耗的油量，就会走到一半没油了。</p>
 
-				</p>
-			</div>
- 	
-		
-		
-			<div>
-				<h3><a href="16275544622678.html">常用的三方库</a></h3>
-				<p>
-					<time datetime="2021-07-29T18:27:42+08:00" pubdate><span class='month'>7月</span> <span class='day'>29</span> <span class='year'>2021</span></time>
-					&nbsp;&nbsp;
-				  <span class="categories">posted in 
-				  
-					    <a class='category' href='%E7%AC%94%E8%AE%B0.html'>笔记</a>&nbsp;
-				   
-				  </span>
+<p>如果 Gas Limit 设置的小于实际消耗的 Gas。则会：</p>
 
-				</p>
-			</div>
- 	 
-</div>  
+<ol>
+<li>交易失败。 </li>
+<li>返还交易的金额。</li>
+<li>交易时已经产生的 Gas 不会返还。（以汽车为例：车开到一半，因为油箱太小而没有油了。已经消耗的油不会返还的。）</li>
+</ol>
+
+<h4 id="toc_1">矿工费如何选择</h4>
+
+<p>在交易过程中选择合适的 <code>Gas Price</code>。（会影响交易速度，看情况选择）</p>
+
+<p>选择合适的 <code>Gas Limit</code>，不能设置小于实际（会交易失败）。不能设置太大（会产生更多的手续费）</p>
+
+
+</div>
+
+<br /><br />
+<hr />
+
+<div class="row clearfix">
+  <div class="large-6 columns">
+	<div class="text-left" style="padding:15px 0px;">
+		
+	        <a href="16279711302389.html"  title="Previous Post: HDWallet 推导密钥流程">&laquo; HDWallet 推导密钥流程</a>
+	    
+	</div>
+  </div>
+  <div class="large-6 columns">
+	<div class="text-right" style="padding:15px 0px;">
+		
+	        <a href="16275551478614.html" 
+	        title="Next Post: Flutter 笔记">Flutter 笔记 &raquo;</a>
+	    
+	</div>
+  </div>
+</div>
+
+<div class="row">
+<div style="padding:0px 0.93em;" class="share-comments">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var currentURL = '16279703602193.html';
+		$('#side-nav a').each(function(){
+			if($(this).attr('href') == currentURL){
+				$(this).parent().addClass('active');
+			}
+		});
+	});
+</script>  
 </div></div>
 
 
